@@ -18,6 +18,9 @@ export default function Home() {
   const rutaTarea= nombreTarea.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, "-");
   const parSeleccionado = searchParams.get("parSeleccionado") || "";
+  const frecuencia = searchParams.get("frecuencia") || "";
+  const intensidad = searchParams.get("intensidad") || "";
+
 
   const guardarResultadoEEG_YAvanzar = (resultadoClinico: string) => {
     const expedienteGuardado = localStorage.getItem("pacienteActual");
@@ -31,19 +34,22 @@ export default function Home() {
         }
 
         const indiceExistente = expediente.registroEstimulacion.findIndex(
-          (registro: any) => registro.par === parSeleccionado && registro.tarea === nombreTarea && registro.resultado.includes("EEG") 
+          (registro: any) => registro.par === parSeleccionado && registro.tarea === nombreTarea && registro.frecuencia === frecuencia && registro.resultado.includes("EEG") 
         );
 
         if (indiceExistente !== -1) {
           expediente.registroEstimulacion[indiceExistente].resultado = resultadoClinico;
           expediente.registroEstimulacion[indiceExistente].fecha = new Date().toLocaleString();
+          expediente.registroEstimulacion[indiceExistente].intensidad = intensidad;
           console.log("Registro EEG previo actualizado con éxito.");
         } else {
           const nuevoRegistro = {
             par: parSeleccionado,
             tarea: nombreTarea,
             resultado: resultadoClinico, 
-            fecha: new Date().toLocaleString()
+            fecha: new Date().toLocaleString(),
+            frecuencia: frecuencia,
+            intensidad: intensidad
           };
           expediente.registroEstimulacion.push(nuevoRegistro);
           console.log("Nuevo registro EEG guardado:", nuevoRegistro);
@@ -100,28 +106,31 @@ export default function Home() {
               {mostrarText && (
                 <>
                   <div className="flex flex-col translate-y-10">
-                    <textarea
+                    <select
                       autoFocus
-                      placeholder="Escriba las alteraciones clínicas..."
-                      rows={4}
                       value={alteraciones}
                       onChange={(e) => setAlteraciones(e.target.value)}
-                      className="border-2 border-blue-200 rounded-lg p-3 text-black w-100 h-40 focus:border-blue-300 outline-none resize-none"
-                    />
+                      className="border-2 border-blue-200 rounded-lg p-3 text-black w-[400px] focus:border-blue-300 outline-none cursor-pointer bg-white"
+                    >
+                      <option value="" disabled>Seleccione una opción...</option>
+                      <option value="Postdescargas">Postdescargas</option>
+                      <option value="Crisis eléctrica">Crisis eléctrica</option>
+                      <option value="Crisis electroclínica">Crisis electroclínica</option>
+                    </select>
                   </div>
                   <div className="flex flex-col gap-10 mt-10 translate-y-10">
                     <div className="flex flex-col gap-10 text-base font-medium sm:flex-row justify-center">
                       {nombreTarea==="detección de síntomas" ? (
                         <Link
                         className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-                        href={`/pantalla4?parSeleccionado=${parSeleccionado}`}    
+                        href={`/pantalla4?parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}    
                       >
                         CANCELAR REGISTRO
                       </Link>
                       ):(
                         <Link
                         className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-                        href={`/${rutaTarea}?parSeleccionado=${parSeleccionado}`}    
+                        href={`/${rutaTarea}?parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}    
                         >
                         CANCELAR REGISTRO
                       </Link>

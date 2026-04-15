@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Home() {
@@ -12,8 +13,12 @@ export default function Home() {
   const [intensidad, setIntensidad] = useState("");
 
   const [datosTSV, setDatosTSV] = useState<{ col1: string; col2: string }[]>([]);
-
   const [listaPares, setListaPares] = useState<string[]>([]);
+  
+  // 1. NUEVA VARIABLE: Para controlar cuándo mostrar el mensaje de error
+  const [mostrarError, setMostrarError] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const datosGuardados = localStorage.getItem("pacienteActual");
@@ -47,6 +52,16 @@ export default function Home() {
     }
   }, []);
 
+  const validarYAvanzar = () => {
+    if (!parSeleccionado || !frecuencia || !intensidad) {
+      setMostrarError(true);
+      return; 
+    }
+
+    setMostrarError(false);
+    router.push(`/pantalla4?parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`);
+  };
+
   return (
     <div className="flex min-h-screen items-start justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex self-start min-h-screen w-full flex-col items-center justify-between py-32 px-16 bg-blue-50 dark:bg-black">
@@ -60,9 +75,12 @@ export default function Home() {
               CONTACTOS
             </h2>
             <select
-            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black"
+            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black bg-white"
             value={parSeleccionado} 
-            onChange={(e) => setParSeleccionado(e.target.value)}
+            onChange={(e) => {
+              setParSeleccionado(e.target.value);
+              setMostrarError(false); 
+            }}
             >
             <option value=""></option>
             {listaPares.map((par, index) => (
@@ -78,17 +96,21 @@ export default function Home() {
               FRECUENCIA
             </h2>
             <select
-            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black"
+            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black bg-white"
             value={frecuencia} 
-            onChange={(e) => setFrecuencia(e.target.value)}
+            onChange={(e) => {
+              setFrecuencia(e.target.value);
+              setMostrarError(false);
+            }}
             >
             <option value=""></option>
-            <option value="1 Hz">
-              {"1 Hz"}
-            </option>
-            <option value="50 Hz">
-              {"50 Hz"}
-            </option>
+            <option value="1 Hz">{"1 Hz"}</option>
+            <option value="10 Hz">{"10 Hz"}</option>
+            <option value="20 Hz">{"20 Hz"}</option>
+            <option value="25 Hz">{"25 Hz"}</option>
+            <option value="30 Hz">{"30 Hz"}</option>
+            <option value="40 Hz">{"40 Hz"}</option>
+            <option value="50 Hz">{"50 Hz"}</option>
             </select>
           </div>
            <div className="flex flex-row items-center justify-between w-[400px] -translate-y-5">
@@ -96,46 +118,55 @@ export default function Home() {
               INTENSIDAD
             </h2>
             <select
-            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black"
+            className="w-30 -translate-x-10 py-1 px-2 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-blue-300 text-black bg-white"
             value={intensidad} 
-            onChange={(e) => setIntensidad(e.target.value)}
+            onChange={(e) => {
+              setIntensidad(e.target.value);
+              setMostrarError(false); 
+            }}
             >
             <option value=""></option>
-            <option value="1 mA">
-              {"1 mA"}
-            </option>
-            <option value="2 mA">
-              {"2 mA"}
-            </option>
-            <option value="3 mA">
-              {"3 mA"}
-            </option>
-            <option value="4 mA">
-              {"4 mA"}
-            </option>
-            <option value="5 mA">
-              {"5 mA"}
-            </option>
+            <option value="1 mA">{"1 mA"}</option>
+            <option value="2 mA">{"2 mA"}</option>
+            <option value="3 mA">{"3 mA"}</option>
+            <option value="4 mA">{"4 mA"}</option>
+            <option value="5 mA">{"5 mA"}</option>
+            <option value="6 mA">{"6 mA"}</option>
+            <option value="7 mA">{"7 mA"}</option>
+            <option value="8 mA">{"8 mA"}</option>
+            <option value="9 mA">{"9 mA"}</option>
+            <option value="10 mA">{"10 mA"}</option>
             </select>
           </div>
         </div>
-        <div className="flex flex-col gap-10 mt-10">
+
+        <div className="h-10 mt-6">
+          {mostrarError && (
+            <div className="p-3 rounded-lg bg-red-50 border border-red-200 dark:bg-zinc-800 dark:border-red-900">
+                <p className="font-medium text-red-500 text-sm text-center">
+                  Por favor, seleccione Contactos, Frecuencia e Intensidad antes de continuar.
+                </p>
+            </div> 
+          )}
+        </div>
+
+        <div className="flex flex-col gap-10 mt-4">
           <div className="flex flex-col gap-10 text-base font-medium sm:flex-row justify-center">
             <Link
             onClick={() => {
               localStorage.removeItem("misDatosTSV"); 
             }}
-              className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
+              className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-[158px]"
               href="/pantalla5"
             >
               FINALIZAR
             </Link>
-            <Link
-              className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-              href={`/pantalla4?parSeleccionado=${parSeleccionado}`}
+            <button
+              className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-[158px]"
+              onClick={validarYAvanzar}
             >
               SIGUIENTE
-            </Link>
+            </button>
           </div>
         </div>
       </main>

@@ -9,6 +9,8 @@ export default function Home() {
 
   const searchParams = useSearchParams();
   const parSeleccionado = searchParams.get("parSeleccionado") || "";
+  const frecuencia = searchParams.get("frecuencia") || "";
+  const intensidad = searchParams.get("intensidad") || "";
 
 
   return (
@@ -107,7 +109,7 @@ export default function Home() {
           <div className="flex flex-col gap-4 text-base font-medium sm:flex-row justify-center">
             <Link
               className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-              href={`/resultado?tarea=lectura&parSeleccionado=${parSeleccionado}`}
+              href={`/resultado?tarea=lectura&parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}
             >
               FINALIZAR
             </Link>

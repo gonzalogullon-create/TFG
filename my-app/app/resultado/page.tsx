@@ -10,6 +10,7 @@ export default function Home() {
 
   const [mostrarText, setMostrarText] = useState(false);
   const [alteraciones, setAlteraciones] = useState(""); 
+  const [detalleAlteracion, setDetalleAlteracion] = useState("");
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -18,6 +19,8 @@ export default function Home() {
   const rutaTarea= nombreTarea.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, "-");
   const parSeleccionado = searchParams.get("parSeleccionado") || "";
+  const frecuencia = searchParams.get("frecuencia") || "";
+  const intensidad = searchParams.get("intensidad") || "";
 
   const guardarResultadoYAvanzar = (resultadoClinico: string) => {
     const expedienteGuardado = localStorage.getItem("pacienteActual");
@@ -29,17 +32,20 @@ export default function Home() {
           expediente.registroEstimulacion = [];
         }
         const indiceExistente = expediente.registroEstimulacion.findIndex(
-          (registro: any) => registro.par === parSeleccionado  && registro.tarea === nombreTarea && !registro.resultado.includes("EEG")
+          (registro: any) => registro.par === parSeleccionado  && registro.tarea === nombreTarea && registro.frecuencia === frecuencia && !registro.resultado.includes("EEG")
         );
 
         if (indiceExistente !== -1) {
           expediente.registroEstimulacion[indiceExistente].resultado = resultadoClinico;
           expediente.registroEstimulacion[indiceExistente].fecha = new Date().toLocaleString();
+          expediente.registroEstimulacion[indiceExistente].intensidad = intensidad; 
           console.log("Registro previo actualizado con éxito.");
         } else {
           const nuevoRegistro = {
             par: parSeleccionado,
             tarea: nombreTarea,
+            frecuencia: frecuencia,
+            intensidad: intensidad,
             resultado: resultadoClinico,
             fecha: new Date().toLocaleString() 
           };
@@ -56,7 +62,7 @@ export default function Home() {
       console.warn("No hay ningún paciente activo guardado en memoria.");
     }
 
-    router.push(`/resultadoeeg?tarea=${nombreTarea}&parSeleccionado=${parSeleccionado}`);
+    router.push(`/resultadoeeg?tarea=${nombreTarea}&parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`);  
   };
 
   return (
@@ -97,43 +103,64 @@ export default function Home() {
             </div>
               {mostrarText && (
                 <>
-                  <div className="flex flex-col translate-y-10">
-                    <textarea
+                  <div className="flex flex-col translate-y-10 gap-4">
+                    <select
                       autoFocus
-                      placeholder="Escriba las alteraciones clínicas..."
-                      rows={4}
                       value={alteraciones}
                       onChange={(e) => setAlteraciones(e.target.value)}
-                      className="border-2 border-blue-200 rounded-lg p-3 text-black w-100 h-40 focus:border-blue-300 outline-none resize-none"
-                    />
+                      className="border-2 border-blue-200 rounded-lg p-3 text-black w-[400px] focus:border-blue-300 outline-none cursor-pointer bg-white"
+                    >
+                      <option value="" disabled>Seleccione el tipo de alteración...</option>
+                      <option value="Motora">Motora</option>
+                      <option value="Visual">Visual</option>
+                      <option value="Lenguaje">Lenguaje</option>
+                      <option value="Sensitiva">Sensitiva</option>
+                      <option value="Otra">Otra</option>
+                    </select>
+
+                    {alteraciones !== "" && (  
+                      <textarea
+                        autoFocus
+                        placeholder="Especifique la alteración clínica..."
+                        rows={4}
+                        value={detalleAlteracion}
+                        onChange={(e) => setDetalleAlteracion(e.target.value)}
+                        className="border-2 border-blue-200 rounded-lg p-3 text-black w-[400px] h-32 focus:border-blue-300 outline-none resize-none"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col gap-10 mt-10 translate-y-10">
                     <div className="flex flex-col gap-10 text-base font-medium sm:flex-row justify-center">
                       {nombreTarea==="detección de síntomas"? (
                         <Link
                         className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-                        href={`/pantalla4?parSeleccionado=${parSeleccionado}`}    
+                        href={`/pantalla4?parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}    
                       >
                         CANCELAR REGISTRO
                       </Link>
                       ):(
                         <Link
                         className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-                        href={`/${rutaTarea}?parSeleccionado=${parSeleccionado}`}    
+                        href={`/${rutaTarea}?parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}    
                         >
                         CANCELAR REGISTRO
                       </Link>
                       )}
                       <button
                         onClick={() => {
-                          if (!alteraciones.trim()) {
+                          if (!alteraciones) {
                             guardarResultadoYAvanzar("Sin alteraciones (OK)");
-                          }
-                          else{
-                            guardarResultadoYAvanzar(`Alteración: ${alteraciones}`);
+                          } else {
+                            let resultadoFinal = alteraciones;
+                            
+                            if (detalleAlteracion.trim() !== "") {
+                              resultadoFinal += `. ${detalleAlteracion.trim()}`;
+                            }
+                            
+                            guardarResultadoYAvanzar(`Alteración: ${resultadoFinal}`);
                           }
                         }}
-                        className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
+                        className="flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-[158px]"
                       >
                         SIGUIENTE
                       </button>

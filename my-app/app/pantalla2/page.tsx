@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
 
@@ -15,6 +17,8 @@ export default function Home() {
   const [nombreArchivo, setNombreArchivo] = useState(""); 
 
   const [mensajeGuardado, setMensajeGuardado] = useState("");
+
+  const router = useRouter();
 
   const procesarArchivo = (evento: React.ChangeEvent<HTMLInputElement>) => {
     const archivo = evento.target.files?.[0];
@@ -87,6 +91,28 @@ export default function Home() {
     }
   };
 
+  const continuarPaciente = () => {
+    const pacientePrevio = localStorage.getItem("pacienteActual");
+
+    if (!pacientePrevio) {
+      setMensajeGuardado("No hay ningún paciente guardado. Por favor, registre uno nuevo.");
+      return; 
+    }
+
+    try {
+      const expediente = JSON.parse(pacientePrevio);
+      const nombreGuardado = expediente.datosPersonales?.nombre || "Paciente sin nombre";
+      
+      const confirmacion = window.confirm(`¿Desea seguir con "${nombreGuardado}"?`);
+      
+      if (confirmacion) {
+        router.push("/pantalla3");
+      }
+    } catch (error) {
+      console.error("Error al leer el paciente", error);
+      setMensajeGuardado("Error al intentar recuperar el paciente guardado.");
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-start justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -182,13 +208,13 @@ export default function Home() {
             >
               GUARDAR PACIENTE
             </button>
-            <Link
+            <button
+              onClick={continuarPaciente}
               className="flex h-14 flex-col items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-              href="/pantalla3"
             >
              <span>SEGUIR CON </span> 
              <span>ÚLTIMO PACIENTE</span> 
-            </Link>
+            </button>
           </div>
         </div>
       </main>

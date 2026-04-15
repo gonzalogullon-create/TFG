@@ -17,7 +17,7 @@ export default function Carrusel({ imagenes }: CarruselProps) {
   useEffect(() => {
     const intervalo = setInterval(() => {
       setIndiceActual((prev) => (prev === imagenes.length - 1 ? 0 : prev + 1));
-    }, 2000);
+    }, 1500);
 
     return () => clearInterval(intervalo);
   }, [imagenes.length]);

@@ -12,6 +12,9 @@ const [imagenesDisponibles, setImagenesDisponibles] = useState(imagenes);
 const [imagenActual, setImagenActual] = useState("");
 const searchParams = useSearchParams();
 const parSeleccionado = searchParams.get("parSeleccionado") || "";
+const frecuencia= searchParams.get("frecuencia") || "";
+const intensidad= searchParams.get("intensidad") || "";
+
 
 const cargarImagenAleatoria = () => {
     if (imagenesDisponibles.length === 0) return;
@@ -57,7 +60,7 @@ useEffect(() => {
             )}
             <Link
               className="active:scale-95 flex h-12 items-center justify-center rounded-full bg-[#5170F5] px-5 text-background transition-colors hover:bg-[#879CFA] dark:hover:bg-[#ccc] w-158px"
-              href={`/resultado?tarea=descripción de imágenes&parSeleccionado=${parSeleccionado}`}
+              href={`/resultado?tarea=descripción de imágenes&parSeleccionado=${parSeleccionado}&frecuencia=${frecuencia}&intensidad=${intensidad}`}
             >
               FINALIZAR
             </Link>
