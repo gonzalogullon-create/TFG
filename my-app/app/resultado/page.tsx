@@ -69,7 +69,6 @@ export default function Home() {
     <div className="flex min-h-screen items-start justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex self-start min-h-screen w-full flex-col items-center pt-22 pb-32 px-12 bg-blue-50 dark:bg-black">
         
-        {/* AQUÍ EL CAMBIO: w-[400px] en lugar de w-full. Esto centra el bloque entero pero deja el texto alineado a la izquierda */}
         <div className="w-[650px] flex flex-col items-start gap-6 mb-12">
           <h1 className="text-3xl font-semibold leading-10 tracking-tight dark:text-zinc-50">
             {nombreTarea.toUpperCase()}
