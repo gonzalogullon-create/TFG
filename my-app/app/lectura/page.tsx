@@ -17,10 +17,10 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full flex-col items-center justify-between py-32 px-16 bg-blue-50 dark:bg-black">
         <div className="flex flex-col items-center gap-6 text-center">
-          <h1 className="max-w-xs -translate-x-40 -translate-y-10 text-3xl font-semibold leading-10 tracking-tight dark:text-zinc-50">
+          <h1 className="max-w-xs -translate-x-45 -translate-y-5 text-3xl font-semibold leading-10 tracking-tight dark:text-zinc-50">
             LECTURA
           </h1>
-          <div className="w-full h-80 overflow-y-auto bg-white dark:bg-zinc-900 rounded-2xl p-4 md:p-4 shadow-lg border border-blue-100 dark:border-zinc-800">
+          <div className="max-w-xl h-80 overflow-y-auto bg-white dark:bg-zinc-900 rounded-2xl p-4 md:p-4 shadow-lg border border-blue-100 dark:border-zinc-800">
             <p className="text-l md:text-l font-normal leading-relaxed text-zinc-800 dark:text-zinc-100 text-justify select-none whitespace-pre-line">
 
               {`Cuando yo tenía seis años vi en un libro sobre la selva virgen que se titulaba "Historias vividas", una magnífica lámina. Representaba una serpiente boa que se tragaba a una fiera. 

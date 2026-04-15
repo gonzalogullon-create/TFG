@@ -70,7 +70,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-start justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex self-start min-h-screen w-full flex-col items-center pt-22 pb-32 px-13 bg-blue-50 dark:bg-black">
-        <div className="w-full flex flex-col items-start gap-6 mb-12">
+        <div className="w-[650px] flex flex-col items-start gap-6 mb-12">
           <h1 className="text-3xl font-semibold leading-10 tracking-tight dark:text-zinc-50">
             {nombreTarea.toUpperCase()}
           </h1>

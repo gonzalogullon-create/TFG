@@ -49,7 +49,7 @@ useEffect(() => {
             )}
           </div>
 
-          <div className="flex flex-col gap-4 text-base font-medium sm:flex-row justify-center">
+          <div className="flex flex-col gap-4 text-base font-medium sm:flex-row justify-center mt-5">
             {imagenesDisponibles.length > 0 && (
               <button
                 onClick={cargarImagenAleatoria}
